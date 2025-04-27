@@ -4,12 +4,12 @@ namespace DotNetWebApiStarter.DTOs.Requests
 {
     public class InsertProductRequestDTO
     {
-        [Required(ErrorMessage = "Il nome del prodotto è obbligatorio.")]
-        [StringLength(100, ErrorMessage = "Il nome del prodotto non può superare i 100 caratteri.")]
+        [Required(ErrorMessage = "Product name is required.")]
+        [StringLength(100, ErrorMessage = "Product name cannot exceed 100 characters.")]
         public string? Name { get; set; }
 
-        [Required(ErrorMessage = "Il prezzo del prodotto è obbligatorio.")]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Il prezzo deve essere maggiore di zero.")]
+        [Required(ErrorMessage = "Product price is mandatory.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than zero.")]
         public decimal Price { get; set; }
     }
 }
