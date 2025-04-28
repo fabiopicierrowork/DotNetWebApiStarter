@@ -5,9 +5,9 @@ using DotNetWebApiStarter.Services.Interfaces;
 using DotNetWebApiStarter.Services;
 using DotNetWebApiStarter.Mappings;
 
-namespace DotNetWebApiStarter.Extensions
+namespace DotNetWebApiStarter
 {
-    public static class ServiceExtensions
+    public static class DependencyInjection
     {
         public static void ConfigureDatabaseContext(this IServiceCollection services)
         {

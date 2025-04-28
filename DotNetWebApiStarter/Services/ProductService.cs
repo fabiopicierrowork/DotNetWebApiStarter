@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using DotNetWebApiStarter.Contracts.Requests;
+using DotNetWebApiStarter.Contracts.Responses;
 using DotNetWebApiStarter.Data.Repositories.Interfaces;
-using DotNetWebApiStarter.DTOs.Requests;
-using DotNetWebApiStarter.DTOs.Responses;
 using DotNetWebApiStarter.Models;
 using DotNetWebApiStarter.Services.Interfaces;
 
@@ -18,28 +18,28 @@ namespace DotNetWebApiStarter.Services
             _productRepository = productRepository;
         }
 
-        public async Task<IEnumerable<InsertProductResponseDTO>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+        public async Task<IEnumerable<CreateProductResponse>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
         {
             IEnumerable<Product> products = await _productRepository.GetAllAsync(pageNumber, pageSize, cancellationToken);
-            IEnumerable<InsertProductResponseDTO> response = _mapper.Map<IEnumerable<InsertProductResponseDTO>>(products);
+            IEnumerable<CreateProductResponse> response = _mapper.Map<IEnumerable<CreateProductResponse>>(products);
 
             return response;
         }
 
-        public async Task<InsertProductResponseDTO?> GetByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<CreateProductResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             Product? product = await _productRepository.GetByIdAsync(id, cancellationToken);
-            InsertProductResponseDTO response = _mapper.Map<InsertProductResponseDTO>(product);
+            CreateProductResponse response = _mapper.Map<CreateProductResponse>(product);
 
             return response;
         }
 
-        public async Task<InsertProductResponseDTO> InsertAsync(InsertProductRequestDTO request, CancellationToken cancellationToken)
+        public async Task<CreateProductResponse> InsertAsync(CreateProductRequest request, CancellationToken cancellationToken)
         {
             Product product = _mapper.Map<Product>(request);
             int productId = await _productRepository.InsertAsync(product, cancellationToken);
             product.Id = productId;
-            InsertProductResponseDTO response = _mapper.Map<InsertProductResponseDTO>(product);
+            CreateProductResponse response = _mapper.Map<CreateProductResponse>(product);
 
             return response;
         }

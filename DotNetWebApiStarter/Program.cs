@@ -1,4 +1,5 @@
-using DotNetWebApiStarter.Extensions;
+using DotNetWebApiStarter;
+using DotNetWebApiStarter.Middlewares;
 
 internal class Program
 {
@@ -25,6 +26,8 @@ internal class Program
         }
 
         app.UseHttpsRedirection();
+
+        app.UseMiddleware<DatabaseExceptionHandlerMiddleware>();
 
         app.UseAuthorization();
 

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using DotNetWebApiStarter.DTOs.Requests;
-using DotNetWebApiStarter.DTOs.Responses;
+using DotNetWebApiStarter.Contracts.Requests;
+using DotNetWebApiStarter.Contracts.Responses;
 using DotNetWebApiStarter.Models;
 
 namespace DotNetWebApiStarter.Mappings
@@ -9,8 +9,8 @@ namespace DotNetWebApiStarter.Mappings
     {
         public ProductProfile()
         {
-            CreateMap<InsertProductRequestDTO, Product>();
-            CreateMap<Product, InsertProductResponseDTO>();
+            CreateMap<CreateProductRequest, Product>();
+            CreateMap<Product, CreateProductResponse>();
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using DotNetWebApiStarter.DTOs.Requests;
-using DotNetWebApiStarter.DTOs.Responses;
+﻿using DotNetWebApiStarter.Contracts.Requests;
+using DotNetWebApiStarter.Contracts.Responses;
 using DotNetWebApiStarter.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -24,7 +24,7 @@ namespace DotNetWebApiStarter.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllAsync([FromQuery][Required] int pageNumber, [FromQuery][Required] int pageSize, CancellationToken cancellationToken = default)
         {
-            IEnumerable<InsertProductResponseDTO> response = await _productService.GetAllAsync(pageNumber, pageSize, cancellationToken);
+            IEnumerable<CreateProductResponse> response = await _productService.GetAllAsync(pageNumber, pageSize, cancellationToken);
             return Ok(response);
         }
 
@@ -33,7 +33,7 @@ namespace DotNetWebApiStarter.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            InsertProductResponseDTO? response = await _productService.GetByIdAsync(id, cancellationToken);
+            CreateProductResponse? response = await _productService.GetByIdAsync(id, cancellationToken);
             if (response is null)
                 return NotFound();
 
@@ -44,12 +44,16 @@ namespace DotNetWebApiStarter.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> InsertAsync([FromBody][Required] InsertProductRequestDTO request, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> InsertAsync([FromBody][Required] CreateProductRequest request, CancellationToken cancellationToken = default)
         {
+            if (string.IsNullOrEmpty(request.Name))
+                ModelState.AddModelError("Name", "Product name is required.");
+            if (request.Price <= 0)
+                ModelState.AddModelError("Price", "Product price is mandatory and must be greater than zero.");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            InsertProductResponseDTO response = await _productService.InsertAsync(request, cancellationToken);
+            CreateProductResponse response = await _productService.InsertAsync(request, cancellationToken);
             return Created(Url.Action(nameof(GetByIdAsync), new { id = response.Id }), response);
         }
     }

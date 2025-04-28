@@ -1,6 +1,6 @@
-﻿namespace DotNetWebApiStarter.DTOs.Responses
+﻿namespace DotNetWebApiStarter.Contracts.Responses
 {
-    public class InsertProductResponseDTO
+    public class CreateProductResponse
     {
         public int Id { get; set; }
         public string? Name { get; set; }

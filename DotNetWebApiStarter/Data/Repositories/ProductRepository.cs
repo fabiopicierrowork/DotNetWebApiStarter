@@ -2,8 +2,6 @@
 using DotNetWebApiStarter.Data.Repositories.Interfaces;
 using DotNetWebApiStarter.Models;
 using System.Data;
-using static Dapper.SqlMapper;
-using System.Data.Common;
 
 namespace DotNetWebApiStarter.Data.Repositories
 {
