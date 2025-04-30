@@ -18,18 +18,18 @@ namespace DotNetWebApiStarter.Services
             _productRepository = productRepository;
         }
 
-        public async Task<IEnumerable<CreateProductResponse>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+        public async Task<IEnumerable<GetProductResponse>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
         {
             IEnumerable<Product> products = await _productRepository.GetAllAsync(pageNumber, pageSize, cancellationToken);
-            IEnumerable<CreateProductResponse> response = _mapper.Map<IEnumerable<CreateProductResponse>>(products);
+            IEnumerable<GetProductResponse> response = _mapper.Map<IEnumerable<GetProductResponse>>(products);
 
             return response;
         }
 
-        public async Task<CreateProductResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<GetProductResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             Product? product = await _productRepository.GetByIdAsync(id, cancellationToken);
-            CreateProductResponse response = _mapper.Map<CreateProductResponse>(product);
+            GetProductResponse response = _mapper.Map<GetProductResponse>(product);
 
             return response;
         }

@@ -24,7 +24,7 @@ namespace DotNetWebApiStarter.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllAsync([FromQuery][Required] int pageNumber, [FromQuery][Required] int pageSize, CancellationToken cancellationToken = default)
         {
-            IEnumerable<CreateProductResponse> response = await _productService.GetAllAsync(pageNumber, pageSize, cancellationToken);
+            IEnumerable<GetProductResponse> response = await _productService.GetAllAsync(pageNumber, pageSize, cancellationToken);
             return Ok(response);
         }
 
@@ -33,7 +33,7 @@ namespace DotNetWebApiStarter.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            CreateProductResponse? response = await _productService.GetByIdAsync(id, cancellationToken);
+            GetProductResponse? response = await _productService.GetByIdAsync(id, cancellationToken);
             if (response is null)
                 return NotFound();
 
