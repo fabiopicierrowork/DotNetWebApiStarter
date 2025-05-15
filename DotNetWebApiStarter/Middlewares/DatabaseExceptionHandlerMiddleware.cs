@@ -27,7 +27,7 @@ namespace DotNetWebApiStarter.Middlewares
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Si è verificato un errore non gestito al livello del database.");
+                _logger.LogError(ex, "An unhandled error occurred at the database level.");
                 throw;
             }
         }
@@ -41,24 +41,22 @@ namespace DotNetWebApiStarter.Middlewares
                 case 2601: // Violation of UNIQUE KEY constraint
                 case 2627: // Violation of PRIMARY KEY constraint (which is also unique)
                     context.Response.StatusCode = (int)HttpStatusCode.Conflict;
-                    var conflictErrorResponse = new { Message = $"Errore di integrità del database: chiave duplicata. Dettagli: {exception.Message}" };
+                    var conflictErrorResponse = new { Message = $"Database integrity error: duplicate key. Details: {exception.Message}" };
                     var conflictJsonResponse = JsonSerializer.Serialize(conflictErrorResponse);
-                    _logger.LogWarning($"Richiesta fallita a causa di violazione di chiave unica: {exception.Message}");
+                    _logger.LogWarning($"Request failed due to unique key violation: {exception.Message}");
                     await context.Response.WriteAsync(conflictJsonResponse);
                     break;
-                // Aggiungi altri codici di errore SQL specifici che vuoi gestire
-                // case 547: // Violation of FOREIGN KEY constraint
-                //     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                //     var foreignKeyErrorResponse = new { Message = $"Errore di integrità del database: violazione di chiave esterna. Dettagli: {exception.Message}" };
-                //     var foreignKeyJsonResponse = JsonSerializer.Serialize(foreignKeyErrorResponse);
-                //     _logger.LogWarning($"Richiesta fallita a causa di violazione di chiave esterna: {exception.Message}");
-                //     await context.Response.WriteAsync(foreignKeyJsonResponse);
-                //     break;
+                 case 547: // Violation of FOREIGN KEY constraint
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    var foreignKeyErrorResponse = new { Message = $"Database integrity error: foreign key violation. Details: {exception.Message}" };
+                    var foreignKeyJsonResponse = JsonSerializer.Serialize(foreignKeyErrorResponse);
+                    _logger.LogWarning($"Request failed due to foreign key violation: {exception.Message}");
+                    await context.Response.WriteAsync(foreignKeyJsonResponse);
+                    break;
                 default:
-                    // Gestisci altri errori SQL come Internal Server Error
-                    _logger.LogError(exception, $"Errore SQL non gestito: Numero {exception.Number}, Messaggio: {exception.Message}");
+                    _logger.LogError(exception, $"Unhandled SQL Error: Number {exception.Number}, Message: {exception.Message}");
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    var defaultErrorResponse = new { Message = "Si è verificato un errore del database." };
+                    var defaultErrorResponse = new { Message = "A database error occurred." };
                     var defaultJsonResponse = JsonSerializer.Serialize(defaultErrorResponse);
                     await context.Response.WriteAsync(defaultJsonResponse);
                     break;

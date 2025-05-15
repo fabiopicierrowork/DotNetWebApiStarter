@@ -43,5 +43,13 @@ namespace DotNetWebApiStarter.Services
 
             return response;
         }
+
+        public async Task<bool> UpdateAsync(UpdateProductRequest request, CancellationToken cancellationToken)
+        {
+            Product product = _mapper.Map<Product>(request);
+            bool response = await _productRepository.UpdateAsync(product, cancellationToken);
+
+            return response;
+        }
     }
 }

@@ -55,5 +55,21 @@ namespace DotNetWebApiStarter.Data.Repositories
                 return await connection.QuerySingleAsync<int>(command);
             }
         }
+
+        public async Task<bool> UpdateAsync(Product product, CancellationToken cancellationToken)
+        {
+            using (IDbConnection connection = await _dbContext.GetConnectionAsync())
+            {
+                string query =
+                    @"UPDATE Product
+                    SET Name = @Name,
+                        Price = @Price
+                    WHERE Id = @Id;";
+
+                CommandDefinition command = new CommandDefinition(query, product, cancellationToken: cancellationToken);
+                int affectedRows = await connection.ExecuteAsync(command);
+                return affectedRows > 0;
+            }
+        }
     }
 }

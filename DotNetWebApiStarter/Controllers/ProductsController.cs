@@ -56,5 +56,33 @@ namespace DotNetWebApiStarter.Controllers
             CreateProductResponse response = await _productService.InsertAsync(request, cancellationToken);
             return Created(Url.Action(nameof(GetByIdAsync), new { id = response.Id }), response);
         }
+
+        [HttpPut("{id}")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateAsync(int id, [FromBody][Required] UpdateProductRequest request, CancellationToken cancellationToken = default)
+        {
+            if (id != request.Id)
+                return BadRequest("The ID in the route does not match the ID in the request body.");
+            if (string.IsNullOrEmpty(request.Name))
+                ModelState.AddModelError("Name", "Product name is required.");
+            if (request.Price <= 0)
+                ModelState.AddModelError("Price", "Product price is mandatory and must be greater than zero.");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            GetProductResponse? existingProduct = await _productService.GetByIdAsync(id, cancellationToken);
+            if (existingProduct is null)
+                return NotFound();
+
+            bool updated = await _productService.UpdateAsync(request, cancellationToken);
+
+            if (updated)
+                return NoContent();
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to update the product.");
+        }
     }
 }

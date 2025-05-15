@@ -12,6 +12,7 @@ namespace DotNetWebApiStarter.Mappings
             CreateMap<CreateProductRequest, Product>();
             CreateMap<Product, GetProductResponse>();
             CreateMap<Product, CreateProductResponse>();
+            CreateMap<UpdateProductRequest, Product>();
         }
     }
 }
