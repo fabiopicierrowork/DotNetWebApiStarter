@@ -1,29 +1,31 @@
 ﻿using Dapper;
 using DotNetWebApiStarter.Data.Repositories.Interfaces;
 using DotNetWebApiStarter.Models;
-using System.Data;
+using Microsoft.Data.SqlClient;
 
 namespace DotNetWebApiStarter.Data.Repositories
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly DatabaseContext _dbContext;
+        private readonly string? _connectionString;
 
-        public ProductRepository(DatabaseContext dbContext)
+        public ProductRepository(IConfiguration configuration)
         {
-            _dbContext = dbContext;
+            _connectionString = configuration.GetSection("DatabaseSettings:ConnectionString").Value;
         }
 
         public async Task<IEnumerable<Product>> GetAllAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
         {
-            using (IDbConnection connection = await _dbContext.GetConnectionAsync())
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
+                await connection.OpenAsync(cancellationToken);
                 string query =
                     @"SELECT Id, Name, Price
                     FROM Product
                     ORDER BY Id
                     OFFSET @Offset ROWS
                     FETCH NEXT @PageSize ROWS ONLY;";
+
                 CommandDefinition command = new CommandDefinition(query, new { Offset = (pageNumber - 1) * pageSize, PageSize = pageSize }, cancellationToken: cancellationToken);
                 return (await connection.QueryAsync<Product>(command));
             }
@@ -31,12 +33,14 @@ namespace DotNetWebApiStarter.Data.Repositories
 
         public async Task<Product?> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            using (IDbConnection connection = await _dbContext.GetConnectionAsync())
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
+                await connection.OpenAsync(cancellationToken);
                 string query =
                     @"SELECT Id, Name, Price
                     FROM Product
                     WHERE Id = @Id;";
+
                 CommandDefinition command = new CommandDefinition(query, new { Id = id }, cancellationToken: cancellationToken);
                 return await connection.QueryFirstOrDefaultAsync<Product>(command);
             }
@@ -44,8 +48,9 @@ namespace DotNetWebApiStarter.Data.Repositories
 
         public async Task<int> InsertAsync(Product product, CancellationToken cancellationToken)
         {
-            using (IDbConnection connection = await _dbContext.GetConnectionAsync())
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
+                await connection.OpenAsync(cancellationToken);
                 string query =
                     @"INSERT INTO Product (Name, Price)
                     OUTPUT INSERTED.Id
@@ -58,8 +63,9 @@ namespace DotNetWebApiStarter.Data.Repositories
 
         public async Task<bool> UpdateAsync(Product product, CancellationToken cancellationToken)
         {
-            using (IDbConnection connection = await _dbContext.GetConnectionAsync())
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
+                await connection.OpenAsync(cancellationToken);
                 string query =
                     @"UPDATE Product
                     SET Name = @Name,

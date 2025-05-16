@@ -7,7 +7,6 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.ConfigureDatabaseContext();
         builder.Services.ConfigureRepositories();
         builder.Services.ConfigureServices();
         builder.Services.ConfigureAutoMappers();

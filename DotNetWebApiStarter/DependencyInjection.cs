@@ -1,6 +1,5 @@
 ﻿using DotNetWebApiStarter.Data.Repositories.Interfaces;
 using DotNetWebApiStarter.Data.Repositories;
-using DotNetWebApiStarter.Data;
 using DotNetWebApiStarter.Services.Interfaces;
 using DotNetWebApiStarter.Services;
 using DotNetWebApiStarter.Mappings;
@@ -9,11 +8,6 @@ namespace DotNetWebApiStarter
 {
     public static class DependencyInjection
     {
-        public static void ConfigureDatabaseContext(this IServiceCollection services)
-        {
-            services.AddScoped<DatabaseContext>();
-        }
-
         public static void ConfigureRepositories(this IServiceCollection services)
         {
             services.AddScoped<IProductRepository, ProductRepository>();
