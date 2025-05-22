@@ -9,5 +9,6 @@ namespace DotNetWebApiStarter.Services.Interfaces
         Task<GetProductResponse?> GetByIdAsync(int id, CancellationToken cancellationToken);
         Task<CreateProductResponse> InsertAsync(CreateProductRequest request, CancellationToken cancellationToken);
         Task<bool> UpdateAsync(UpdateProductRequest request, CancellationToken cancellationToken);
+        Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
     }
 }

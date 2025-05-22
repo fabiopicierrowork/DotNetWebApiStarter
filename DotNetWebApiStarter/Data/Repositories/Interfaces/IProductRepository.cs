@@ -8,5 +8,6 @@ namespace DotNetWebApiStarter.Data.Repositories.Interfaces
         Task<Product?> GetByIdAsync(int id, CancellationToken cancellationToken);
         Task<int> InsertAsync(Product product, CancellationToken cancellationToken);
         Task<bool> UpdateAsync(Product product, CancellationToken cancellationToken);
+        Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
     }
 }

@@ -77,5 +77,20 @@ namespace DotNetWebApiStarter.Data.Repositories
                 return affectedRows > 0;
             }
         }
+
+        public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync(cancellationToken);
+                string query =
+                    @"DELETE FROM Product
+                    WHERE Id = @Id;";
+
+                CommandDefinition command = new CommandDefinition(query, new { Id = id }, cancellationToken: cancellationToken);
+                int affectedRows = await connection.ExecuteAsync(command);
+                return affectedRows > 0;
+            }
+        }
     }
 }

@@ -84,5 +84,23 @@ namespace DotNetWebApiStarter.Controllers
             else
                 return StatusCode(StatusCodes.Status500InternalServerError, "Failed to update the product.");
         }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteAsync(int id, CancellationToken cancellationToken = default)
+        {
+            GetProductResponse? existingProduct = await _productService.GetByIdAsync(id, cancellationToken);
+            if (existingProduct is null)
+                return NotFound();
+
+            bool deleted = await _productService.DeleteAsync(id, cancellationToken);
+
+            if (deleted)
+                return NoContent();
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to delete the product.");
+        }
     }
 }

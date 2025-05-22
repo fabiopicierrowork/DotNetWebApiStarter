@@ -51,5 +51,11 @@ namespace DotNetWebApiStarter.Services
 
             return response;
         }
+
+        public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
+        {
+            bool response = await _productRepository.DeleteAsync(id, cancellationToken);
+            return response;
+        }
     }
 }
