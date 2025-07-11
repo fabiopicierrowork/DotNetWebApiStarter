@@ -15,6 +15,9 @@ internal class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        builder.Services.ConfigureJwtAuthentication(builder.Configuration);
+        builder.Services.AddAuthorization();
+
         var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
@@ -25,6 +28,7 @@ internal class Program
 
         app.UseHttpsRedirection();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();

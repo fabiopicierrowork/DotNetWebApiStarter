@@ -20,7 +20,7 @@ namespace DotNetWebApiStarter.Controllers
             _productService = productService;
         }
 
-        [HttpGet]
+        [HttpGet("GetAll")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllAsync([FromQuery][Required] int pageNumber, [FromQuery][Required] int pageSize, CancellationToken cancellationToken = default)
         {
@@ -28,7 +28,7 @@ namespace DotNetWebApiStarter.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetById/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetByIdAsync(int id, CancellationToken cancellationToken = default)
@@ -40,7 +40,7 @@ namespace DotNetWebApiStarter.Controllers
             return Ok(response);
         }
 
-        [HttpPost]
+        [HttpPost("Insert")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -57,7 +57,7 @@ namespace DotNetWebApiStarter.Controllers
             return Created(Url.Action(nameof(GetByIdAsync), new { id = response.Id }), response);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("Update/{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -85,7 +85,7 @@ namespace DotNetWebApiStarter.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Failed to update the product.");
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

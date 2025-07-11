@@ -21,7 +21,7 @@ namespace DotNetWebApiStarter.Data.Repositories
                 await connection.OpenAsync(cancellationToken);
                 string query =
                     @"SELECT Id, Name, Price
-                    FROM Product
+                    FROM [Product]
                     ORDER BY Id
                     OFFSET @Offset ROWS
                     FETCH NEXT @PageSize ROWS ONLY;";
@@ -38,7 +38,7 @@ namespace DotNetWebApiStarter.Data.Repositories
                 await connection.OpenAsync(cancellationToken);
                 string query =
                     @"SELECT Id, Name, Price
-                    FROM Product
+                    FROM [Product]
                     WHERE Id = @Id;";
 
                 CommandDefinition command = new CommandDefinition(query, new { Id = id }, cancellationToken: cancellationToken);
@@ -52,7 +52,7 @@ namespace DotNetWebApiStarter.Data.Repositories
             {
                 await connection.OpenAsync(cancellationToken);
                 string query =
-                    @"INSERT INTO Product (Name, Price)
+                    @"INSERT INTO [Product] (Name, Price)
                     OUTPUT INSERTED.Id
                     VALUES (@Name, @Price);";
 
@@ -67,7 +67,7 @@ namespace DotNetWebApiStarter.Data.Repositories
             {
                 await connection.OpenAsync(cancellationToken);
                 string query =
-                    @"UPDATE Product
+                    @"UPDATE [Product]
                     SET Name = @Name,
                         Price = @Price
                     WHERE Id = @Id;";
@@ -84,7 +84,7 @@ namespace DotNetWebApiStarter.Data.Repositories
             {
                 await connection.OpenAsync(cancellationToken);
                 string query =
-                    @"DELETE FROM Product
+                    @"DELETE FROM [Product]
                     WHERE Id = @Id;";
 
                 CommandDefinition command = new CommandDefinition(query, new { Id = id }, cancellationToken: cancellationToken);
