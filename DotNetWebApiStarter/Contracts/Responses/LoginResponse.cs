@@ -2,8 +2,9 @@
 {
     public class LoginResponse
     {
-        public string Token { get; set; } = string.Empty;
-        public DateTime Expiration { get; set; }
-        public string Username { get; set; } = string.Empty;
+        public string AccessToken { get; set; } = string.Empty;
+        public DateTime AccessTokenExpiration { get; set; }
+        public string RefreshToken { get; set; } = string.Empty;
+        public DateTime RefreshTokenExpiration { get; set; }
     }
 }

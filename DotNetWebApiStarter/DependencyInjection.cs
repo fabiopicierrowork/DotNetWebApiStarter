@@ -6,6 +6,8 @@ using DotNetWebApiStarter.Mappings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using DotNetWebApiStarter.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace DotNetWebApiStarter
 {
@@ -15,6 +17,7 @@ namespace DotNetWebApiStarter
         {
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
         }
 
@@ -22,6 +25,7 @@ namespace DotNetWebApiStarter
         {
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<IProductService, ProductService>();
         }
 

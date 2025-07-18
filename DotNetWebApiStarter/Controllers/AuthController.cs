@@ -71,7 +71,8 @@ namespace DotNetWebApiStarter.Controllers
 
             try
             {
-                LoginResponse? response = await _authService.LoginAsync(request, cancellationToken);
+                string clientIpAddress = HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? "UNKNOWN_IP";
+                LoginResponse? response = await _authService.LoginAsync(request, clientIpAddress, cancellationToken);
 
                 if (response is null)
                     return Unauthorized();
@@ -82,40 +83,34 @@ namespace DotNetWebApiStarter.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Failed to login the user." });
             }
+        }
 
-            //// 1. Validate user credentials (e.g., against your database)
-            //// This is a placeholder for your actual user validation logic.
-            //// In a real application, you'd check a username and hashed password.
-            //if (request.Username == "testuser" && request.Password == "password")
-            //{
-            //    // 2. If credentials are valid, generate JWT
-            //    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            //    var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+        [HttpPost("RefreshToken")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> RefreshTokenAsync([FromBody][Required] RefreshTokenRequest request, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(request.RefreshToken))
+                ModelState.AddModelError("RefreshToken", "Refresh token is required.");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            //    var claims = new[]
-            //    {
-            //        new Claim(JwtRegisteredClaimNames.Sub, request.Username),
-            //        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            //        new Claim(ClaimTypes.NameIdentifier, "123"), // Example User ID
-            //        new Claim(ClaimTypes.Role, "Admin") // Example Role
-            //    };
+            try
+            {
+                string clientIpAddress = HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? "UNKNOWN_IP";
+                LoginResponse? response = await _authService.RefreshTokenAsync(request.RefreshToken, clientIpAddress, cancellationToken);
 
-            //    var token = new JwtSecurityToken(
-            //        issuer: _configuration["Jwt:Issuer"],
-            //        audience: _configuration["Jwt:Audience"],
-            //        claims: claims,
-            //        expires: DateTime.Now.AddMinutes(30),
-            //        signingCredentials: credentials
-            //    );
+                if (response is null)
+                    return Unauthorized(new { message = "Invalid or expired refresh token." });
 
-            //    var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-
-            //    _logger.LogInformation($"User '{request.Username}' logged in successfully.");
-            //    return Ok(new { Token = tokenString });
-            //}
-
-            //_logger.LogWarning($"Invalid login attempt for user '{request.Username}'.");
-            //return Unauthorized("Invalid credentials.");
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Failed to refresh token." });
+            }
         }
     }
 }
